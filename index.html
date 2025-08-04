@@ -1,0 +1,1718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8" />
+ <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+ <title>TBtools</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background: linear-gradient(135deg, #0d0d0d, #1a1a1a);
+    color: #f0f0f0;
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    padding-bottom: 60px;
+  }
+
+  h1 {
+    text-align: center;
+    padding: 20px;
+    font-size: 32px;
+    border-bottom: 2px solid #333;
+  }
+
+  h2 {
+    text-align: center;
+    margin-top: 20px;
+    font-weight: 600;
+  }
+
+  .section {
+    display: none;
+    padding: 20px;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .section.active {
+    display: block;
+  }
+
+  .button {
+    display: block;
+    width: 80%;
+    margin: 15px auto;
+    padding: 14px;
+    font-size: 16px;
+    background: #1f1f1f;
+    color: white;
+    border: 1px solid #444;
+    border-radius: 12px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(255, 255, 255, 0.05);
+  }
+
+  .button:hover {
+    background: #292929;
+    transform: scale(1.03);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+  }
+
+  .back-btn {
+    position: absolute;
+    top: 10px;
+    left: 15px;
+    font-size: 26px;
+    cursor: pointer;
+    font-weight: bold;
+    color: white;
+  }
+
+  .input-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-top: 40px;
+  }
+
+  .input-box {
+    text-align: center;
+    margin: 10px;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+  }
+
+  input, textarea, select {
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #444;
+    background-color: #111;
+    color: white;
+    font-size: 15px;
+    width: 100%;
+    max-width: 500px;
+    outline: none;
+    transition: 0.2s ease;
+  }
+
+  input:focus, textarea:focus, select:focus {
+    border-color: white;
+    background-color: #1a1a1a;
+  }
+
+  textarea {
+    resize: none;
+    height: 100px;
+    margin-top: 20px;
+  }
+
+  .output-box {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(8px);
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 20px;
+    color: white;
+    font-size: 15px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+  }
+
+  .nav {
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    padding: 15px 0;
+    border-bottom: 2px solid #333;
+  }
+
+  .nav div {
+    margin: 0 20px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    position: relative;
+    color: white;
+    padding-bottom: 5px;
+  }
+
+  .nav div.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: white;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  #boardContainer div {
+  user-select: none;
+}
+
+#boardContainer {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  margin: 20px auto;
+  max-width: 100vw;
+  touch-action: manipulation;
+}
+</style>
+</head>
+<body>
+ <h1>TBtools</h1>
+<div style="position:relative;">
+  <div id="menuToggle" onclick="toggleMenu()" style="position:absolute; top:20px; right:20px; font-size:28px; cursor:pointer;">⋮</div>
+
+  <div id="dropdownMenu" class="hidden" style="
+    position:absolute;
+    top:60px;
+    right:20px;
+    background-color:#111;
+    border:1px solid #444;
+    padding:10px;
+    border-radius:10px;
+    width:260px;
+    z-index:999;
+  ">
+    <input type="text" id="searchTools" placeholder="Search for features..." 
+      style="width:100%; padding:10px; border-radius:8px; background:#111; color:white; border:1px solid #333;">
+  </div>
+</div>
+
+
+<!-- main menu -->
+	
+ <div id="mainMenu" class="section active">
+  <h3 style="text-align:center; margin-top:30px;">main</h3>
+  <button class="button" onclick="openSection('converter')">TB text converter</button>
+  <button class="button" onclick="openSection('random')">Random Numbers</button>
+  <button class="button" onclick="openSection('merge')">Script Merge(Beta)</button>
+  <button class="button" onclick="openSection('html executor')">HTML executor(Beta)</button>
+  
+   <h3 style="text-align:center; margin-top:30px;">time</h3>
+  <button class="button" onclick="openSection('timestamp')">Timestamp</button>
+  <button class="button" onclick="openSection('timerjms')">timer</button>
+  
+     <h3 style="text-align:center; margin-top:30px;">text converter</h3>
+     <button class="button" onclick="openSection('base64 conv')">base64</button>
+     <button class="button" onclick="openSection('base32 conv')">base32</button>
+     <button class="button" onclick="openSection('base16 conv')">base16</button>
+     <button class="button" onclick="openSection('binary conv')">binary</button>
+     <button class="button" onclick="openSection('hex conv')">hexadecimal</button>
+     <button class="button" onclick="openSection('octal conv')">octal</button>
+     <button class="button" onclick="openSection('morse conv')">code morse</button>
+     <button class="button" onclick="openSection('rot13 conv')">ROT13</button>
+
+     <h3 style="text-align:center; margin-top:30px;">mcpe</h3>
+     <button class="button" onclick="openSection('mcpe uuid')">uuid generator</button>
+     <button class="button" onclick="openSection('mcpe manifest')">manifest resource generator</button>
+     <button class="button" onclick="openSection('mcpe manifestbehv')">manifest behavior generator</button>
+     <button class="button" onclick="openSection('mcpe jsonvalid')">json validator (Beta)</button>
+     
+     <h2 style="text-align:center; margin-top:20px;">ㅤ</h2>
+     <button class="button" onclick="openSection('about')">about TBtools</button>
+     
+      <h2 style="text-align:center; margin-top:20px;"></h2>
+ </div>
+
+
+ <!-- Converter Tools -->
+ <div id="converter" class="section">
+ <div class="back-btn" onclick="backToMain()">&#60;</div>
+ <div class="nav">
+ <div id="codeTab" class="active">text to code</div>
+ <div id="textTab">code to text</div>
+ </div>
+ <div class="container">
+ <div id="codeMode">
+ <div style="text-align:center;">Convert text to code</div>
+ <textarea id="textInput" placeholder="Type the text you want to convert..."></textarea>
+ <br>
+ <button class="button" onclick="convertToCode()">Convert</button>
+ <button class="button" id="copyCodeBtn" onclick="copyResult('codeResult','copyCodeBtn')">Copy</button>
+ <div id="codeResult" class="output-box"></div>
+ </div>
+ <div id="textMode" class="hidden">
+ <div style="text-align:center;">Convert code to text</div>
+ <textarea id="codeInput" placeholder="Type the code you want to convert..."></textarea>
+ <br>
+ <button class="button" onclick="convertToText()">Convert</button>
+ <button class="button" id="copyTextBtn" onclick="copyResult('textResult','copyTextBtn')">Copy</button>
+ <div id="textResult" class="output-box"></div>
+ </div>
+ </div>
+ </div>
+
+ <!-- Random Number -->
+ <div id="random" class="section">
+ <div class="back-btn" onclick="backToMain()">&#60;</div>
+ <h2 style="text-align:center;margin-top:40px;">Random Number Generator</h2>
+ <div class="input-group">
+ <div class="input-box">
+ <label for="min">Min</label>
+ <input type="number" id="min" value="">
+ </div>
+ <div class="input-box">
+ <label for="max">Max</label>
+ <input type="number" id="max" value="">
+ </div>
+ </div>
+ <button class="button" onclick="generateRandom()">Random</button>
+ <div id="randomResult" class="output-box"></div>
+ </div>
+
+ <!-- Script merger -->
+<div id="merge" class="section">
+  <div class="back-btn" onclick="backToMain()">&#60;</div>
+  <h2 style="text-align:center;margin-top:40px;">Script Merge Tool</h2>
+
+  <div class="input-group" style="flex-wrap:wrap;">
+    <div class="input-box">
+      <label>Method</label>
+      <select id="mergeMethod" style="padding:10px;">
+        <option value="addonly">Merging Script 1 and 2</option>
+        <option value="replace">Script 1 is overwritten by Script 2</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="input-box">
+    <label style="display:block;margin-top:30px;">Script 1</label>
+    <textarea id="script1" placeholder="Enter Script 1"></textarea>
+    <input type="file" id="import1" accept=".txt,.js,.py,.json,.lua,.html,.css" onchange="loadScriptFile(this,'script1')" />
+  </div>
+
+  <div class="input-box">
+    <label style="display:block;margin-top:30px;">Script 2</label>
+    <textarea id="script2" placeholder="Enter Script 2"></textarea>
+    <input type="file" id="import2" accept=".txt,.js,.py,.json,.lua,.html,.css" onchange="loadScriptFile(this,'script2')" />
+  </div>
+
+  <button class="button" id="mergeBtn" onclick="mergeScripts()">Merge</button>
+  <button class="button" id="copyMergeBtn" onclick="copyResult('mergeResult','copyMergeBtn')">Copy</button>
+  <div id="mergeResult" class="output-box"></div>
+</div>
+
+<!-- Timestamp -->
+<div id="timestamp" class="section">
+  <div class="back-btn" onclick="backToMain()">&#60;</div>
+  <h2 style="text-align:center;margin-top:40px;">Timestamp Timer</h2>
+  
+  <div id="timerDisplay" style="font-size:48px;text-align:center;margin-top:40px;font-weight:bold;">00.00.00</div>
+
+  <div style="text-align:center;margin-top:20px;">
+    <button class="button" style="width:auto;" id="playPauseBtn" onclick="toggletimestamp()">Play</button>
+    <button class="button" style="width:auto;display:none;" id="resetBtn" onclick="resetTimer()">Reset</button>
+  </div>
+</div>
+
+<!-- Timer --->
+	<div id="timerjms" class="section">
+  <div class="back-btn" onclick="backToMain()">&#60;</div>
+  <h2 style="text-align:center;margin-top:40px;">Timer</h2>
+
+  <div style="text-align:center;font-size:30px;margin-top:20px;">
+    <span id="timerHour">00</span>:<span id="timerMin">00</span>:<span id="timerSec">00</span>
+  </div>
+
+  <div style="text-align:center;margin-top:20px;">
+    <input type="number" id="inputHour" placeholder="O'clock" min="0" max="99" style="width:60px;padding:10px;">
+    <input type="number" id="inputMin" placeholder="Minute" min="0" max="59" style="width:60px;padding:10px;">
+    <input type="number" id="inputSec" placeholder="Second" min="0" max="59" style="width:60px;padding:10px;">
+  </div>
+
+  <div style="text-align:center;margin-top:20px;">
+    <button class="button" id="timerPlayBtn" onclick="toggleTimer()">Play</button>
+  </div>
+
+  <div style="text-align:center;margin-top:10px;">
+    <button class="button" id="timerStopBtn" onclick="stopTimer()" style="display:none;">Stop</button>
+  </div>
+
+  <div id="timerFlashBox" style="width:200px;height:100px;margin:30px auto;background:black;"></div>
+
+  <div id="timerWarning" style="text-align:center;color:red;margin-top:10px;font-weight:bold;"></div>
+</div>
+
+<!-- base64 conv -->
+	<div id="base64 conv" class="section">
+  <div class="back-btn" onclick="backToMain()">&#60;</div>
+  <div class="nav">
+    <div id="base64EncodeTab" class="active">Encode</div>
+    <div id="base64DecodeTab">Decode</div>
+  </div>
+  <div class="container">
+    <div id="base64EncodeMode">
+      <div style="text-align:center;">Convert Text to Base64</div>
+      <textarea id="base64TextInput" placeholder="Enter plain text..."></textarea>
+      <br>
+      <button class="button" onclick="convertToBase64()">Convert</button>
+      <button class="button" id="copyBase64Btn" onclick="copyResult('base64Result','copyBase64Btn')">Copy</button>
+      <div id="base64Result" class="output-box"></div>
+    </div>
+    <div id="base64DecodeMode" class="hidden">
+      <div style="text-align:center;">Convert Base64 to Text</div>
+      <textarea id="base64CodeInput" placeholder="Masukkan kode base64..."></textarea>
+      <br>
+      <button class="button" onclick="convertFromBase64()">Convert</button>
+      <button class="button" id="copyBase64DecodeBtn" onclick="copyResult('base64DecodeResult','copyBase64DecodeBtn')">Copy</button>
+      <div id="base64DecodeResult" class="output-box"></div>
+    </div>
+  </div>
+</div>
+
+<!-- binary conv -->
+	<div id="binary conv" class="section">
+  <div class="back-btn" onclick="backToMain()">&#60;</div>
+  <div class="nav">
+    <div id="binaryEncodeTab" class="active">Encode</div>
+    <div id="binaryDecodeTab">Decode</div>
+  </div>
+  <div class="container">
+    <div id="binaryEncodeMode">
+      <div style="text-align:center;">Convert Text to Binary</div>
+      <textarea id="binaryTextInput" placeholder="Masukkan teks..."></textarea>
+      <br>
+      <button class="button" onclick="convertToBinary()">Convert</button>
+      <button class="button" id="copyBinaryBtn" onclick="copyResult('binaryResult','copyBinaryBtn')">Copy</button>
+      <div id="binaryResult" class="output-box"></div>
+    </div>
+    <div id="binaryDecodeMode" class="hidden">
+      <div style="text-align:center;">Convert Binary to Text</div>
+      <textarea id="binaryCodeInput" placeholder="Masukkan kode biner (pisah spasi)..."></textarea>
+      <br>
+      <button class="button" onclick="convertFromBinary()">Convert</button>
+      <button class="button" id="copyBinaryDecodeBtn" onclick="copyResult('binaryDecodeResult','copyBinaryDecodeBtn')">Copy</button>
+      <div id="binaryDecodeResult" class="output-box"></div>
+    </div>
+  </div>
+</div>
+
+<!-- hex conv -->
+	<div id="hex conv" class="section">
+  <div class="back-btn" onclick="backToMain()">&#60;</div>
+  <div class="nav">
+    <div id="hexEncodeTab" class="active">Encode</div>
+    <div id="hexDecodeTab">Decode</div>
+  </div>
+  <div class="container">
+    <div id="hexEncodeMode">
+      <div style="text-align:center;">Convert Text to Hex</div>
+      <textarea id="hexTextInput" placeholder="Masukkan teks..."></textarea>
+      <br>
+      <button class="button" onclick="convertToHex()">Convert</button>
+      <button class="button" id="copyHexBtn" onclick="copyResult('hexResult','copyHexBtn')">Copy</button>
+      <div id="hexResult" class="output-box"></div>
+    </div>
+    <div id="hexDecodeMode" class="hidden">
+      <div style="text-align:center;">Convert Hex to Text</div>
+      <textarea id="hexCodeInput" placeholder="Masukkan hex (pisah spasi)..."></textarea>
+      <br>
+      <button class="button" onclick="convertFromHex()">Convert</button>
+      <button class="button" id="copyHexDecodeBtn" onclick="copyResult('hexDecodeResult','copyHexDecodeBtn')">Copy</button>
+      <div id="hexDecodeResult" class="output-box"></div>
+    </div>
+  </div>
+</div>
+
+<!-- base16 conv -->
+	<div id="base16 conv" class="section">
+  <div class="back-btn" onclick="backToMain()">&#60;</div>
+  <div class="nav">
+    <div id="base16EncodeTab" class="active">Encode</div>
+    <div id="base16DecodeTab">Decode</div>
+  </div>
+  <div class="container">
+    <div id="base16EncodeMode">
+      <div style="text-align:center;">Convert Text to Base16</div>
+      <textarea id="base16TextInput" placeholder="Enter plain text..."></textarea>
+      <br>
+      <button class="button" onclick="convertToBase16()">Convert</button>
+      <button class="button" id="copyBase16Btn" onclick="copyResult('base16Result','copyBase16Btn')">Copy</button>
+      <div id="base16Result" class="output-box"></div>
+    </div>
+    <div id="base16DecodeMode" class="hidden">
+      <div style="text-align:center;">Convert Base16 to Text</div>
+      <textarea id="base16CodeInput" placeholder="Masukkan kode hex (pisah spasi)..."></textarea>
+      <br>
+      <button class="button" onclick="convertFromBase16()">Convert</button>
+      <button class="button" id="copyBase16DecodeBtn" onclick="copyResult('base16DecodeResult','copyBase16DecodeBtn')">Copy</button>
+      <div id="base16DecodeResult" class="output-box"></div>
+    </div>
+  </div>
+</div>
+
+<!-- base32 conv -->
+<div id="base32 conv" class="section">
+  <div class="back-btn" onclick="backToMain()">&#60;</div>
+  <div class="nav">
+    <div id="base32EncodeTab" class="active">Encode</div>
+    <div id="base32DecodeTab">Decode</div>
+  </div>
+  <div class="container">
+    <div id="base32EncodeMode">
+      <div style="text-align:center;">Convert Text to Base32</div>
+      <textarea id="base32TextInput" placeholder="Enter plain text..."></textarea>
+      <br>
+      <button class="button" onclick="convertToBase32()">Convert</button>
+      <button class="button" id="copyBase32Btn" onclick="copyResult('base32Result','copyBase32Btn')">Copy</button>
+      <div id="base32Result" class="output-box"></div>
+    </div>
+    <div id="base32DecodeMode" class="hidden">
+      <div style="text-align:center;">Convert Base32 to Text</div>
+      <textarea id="base32CodeInput" placeholder="Masukkan kode base32..."></textarea>
+      <br>
+      <button class="button" onclick="convertFromBase32()">Convert</button>
+      <button class="button" id="copyBase32DecodeBtn" onclick="copyResult('base32DecodeResult','copyBase32DecodeBtn')">Copy</button>
+      <div id="base32DecodeResult" class="output-box"></div>
+    </div>
+  </div>
+</div>
+
+<!-- uuid -->
+<div id="mcpe uuid" class="section">
+  <div class="back-btn" onclick="backToMain()">&#60;</div>
+  <h2 style="text-align:center; margin-top:40px;">UUID Generator for MCPE</h2>
+  
+  <div style="text-align:center; margin-top:30px;">
+    <div id="uuidOutput" class="output-box" style="margin-top:20px;">klik generate untuk menghasilkan uuid</div>
+    
+    <div style="display: flex; justify-content: center; gap: 10px; margin-top: 20px;">
+      <button class="button" onclick="showUUID()">Generate</button>
+      <button class="button" id="copyUUIDBtn" onclick="copyResult('uuidOutput','copyUUIDBtn')">Copy</button>
+    </div>
+  </div>
+</div>
+
+<!-- manifest resource json -->
+<div id="mcpe manifest" class="section">
+  <div class="back-btn" onclick="backToMain()">&#60;</div>
+  <h2 style="text-align:center;margin-top:20px;">Manifest Behavior Generator</h2>
+
+  <div class="input-group" style="flex-direction:column;align-items:center;">
+    <div class="input-box">
+      <label for="mf_name">Name</label>
+      <input type="text" id="mf_name" placeholder="Pack Name" />
+    </div>
+
+    <div class="input-box">
+      <label for="mf_desc">Description</label>
+      <input type="text" id="mf_desc" placeholder="Pack Description" />
+    </div>
+
+    <div class="input-box">
+      <label for="mf_version">Version (example: 1.0.0)</label>
+      <input type="text" id="mf_version" placeholder="1.0.0" />
+    </div>
+
+    <div class="input-box">
+      <label for="mf_mev">Min Engine Version (example: 1.20.60)</label>
+      <input type="text" id="mf_mev" placeholder="1.20.60" />
+    </div>
+
+    <div class="input-box" style="margin-top:20px;">
+      <button class="button" onclick="addSubpack()">+ Subpack</button>
+      <div id="subpackContainer" style="margin-top:10px;"></div>
+    </div>
+
+    <div class="input-box" style="margin-top:10px;">
+      <button class="button" onclick="addLabel()">+ Label</button>
+      <div id="labelContainer" style="margin-top:10px;"></div>
+    </div>
+
+    <button class="button" onclick="generateManifest()" style="margin-top:20px;">Generate</button>
+  </div>
+
+  <div id="manifestResult" class="output-box" style="margin-top:20px;"></div>
+  <div style="text-align:center;margin-top:10px;">
+    <button class="button" id="copyManifestBtn" onclick="copyResult('manifestResult','copyManifestBtn')">Copy</button>
+    <button class="button" onclick="downloadManifest()">Download</button>
+  </div>
+</div>
+
+<!-- manifest behavior json -->
+<div id="mcpe manifestbehv" class="section">
+  <div class="back-btn" onclick="backToMain()">&#60;</div>
+  <h2 style="text-align:center;margin-top:20px;">Manifest Behavior Generator</h2>
+
+  <div class="input-group" style="flex-direction:column;align-items:center;">
+    <div class="input-box">
+      <label for="mf_namebehv">Name</label>
+      <input type="text" id="mf_namebehv" placeholder="Pack Name" />
+    </div>
+
+    <div class="input-box">
+      <label for="mf_descbehv">Description</label>
+      <input type="text" id="mf_descbehv" placeholder="Pack Description" />
+    </div>
+
+    <div class="input-box">
+      <label for="mf_versionbehv">Version (example: 1.0.0)</label>
+      <input type="text" id="mf_versionbehv" placeholder="1.0.0" />
+    </div>
+
+    <div class="input-box">
+      <label for="mf_mevbehv">Min Engine Version (example: 1.20.60)</label>
+      <input type="text" id="mf_mevbehv" placeholder="1.20.60" />
+    </div>
+
+    <div class="input-box" style="margin-top:20px;">
+      <button class="button" onclick="addSubpackBehv()">+ Subpack</button>
+      <div id="subpackContainerBehv" style="margin-top:10px;"></div>
+    </div>
+
+    <div class="input-box" style="margin-top:10px;">
+      <button class="button" onclick="addLabelBehv()">+ Label</button>
+      <div id="labelContainerBehv" style="margin-top:10px;"></div>
+    </div>
+
+    <button class="button" onclick="generateManifestBehv()" style="margin-top:20px;">Generate</button>
+  </div>
+
+  <div id="manifestResultBehv" class="output-box" style="margin-top:20px;"></div>
+  <div style="text-align:center;margin-top:10px;">
+    <button class="button" id="copyManifestBtnBehv" onclick="copyResult('manifestResultBehv','copyManifestBtnBehv')">Copy</button>
+    <button class="button" onclick="downloadManifestBehv()">Download</button>
+  </div>
+</div>
+
+<!-- json validator -->
+<div id="mcpe jsonvalid" class="section">
+  <div class="back-btn" onclick="backToMain()">&#60;</div>
+  <h2 style="text-align:center; margin-top:20px;">JSON Validator</h2>
+
+  <div class="input-box" style="margin-top:20px;">
+    <label for="jsonInput">Paste your JSON here:</label>
+    <textarea id="jsonInput" placeholder="{ 'nama': 'TBtools' }"></textarea>
+  </div>
+
+  <button class="button" onclick="validateJson()">Validator</button>
+
+  <div id="jsonCopyWrapper" style="display:none; text-align:center; margin-top:10px;">
+    <button class="button" id="copyJsonBtn" onclick="copyResult('jsonResult','copyJsonBtn')">Copy</button>
+  </div>
+
+  <div id="jsonResult" class="output-box" style="display:none; margin-top:10px;"></div>
+</div>
+
+<!-- octal -->
+	<div id="octal conv" class="section">
+  <div class="back-btn" onclick="backToMain()">&#60;</div>
+  <div class="nav">
+    <div id="octalEncodeTab" class="active">Encode</div>
+    <div id="octalDecodeTab">Decode</div>
+  </div>
+  <div class="container">
+    <div id="octalEncodeMode">
+      <div style="text-align:center;">Convert Text to Octal</div>
+      <textarea id="octalTextInput" placeholder="Masukkan teks..."></textarea>
+      <br>
+      <button class="button" onclick="convertToOctal()">Convert</button>
+      <button class="button" id="copyOctalBtn" onclick="copyResult('octalResult','copyOctalBtn')">Copy</button>
+      <div id="octalResult" class="output-box"></div>
+    </div>
+    <div id="octalDecodeMode" class="hidden">
+      <div style="text-align:center;">Convert Octal to Text</div>
+      <textarea id="octalCodeInput" placeholder="Masukkan kode octal (pisah spasi)..."></textarea>
+      <br>
+      <button class="button" onclick="convertFromOctal()">Convert</button>
+      <button class="button" id="copyOctalDecodeBtn" onclick="copyResult('octalDecodeResult','copyOctalDecodeBtn')">Copy</button>
+      <div id="octalDecodeResult" class="output-box"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Morse conv -->
+	<div id="morse conv" class="section">
+  <div class="back-btn" onclick="backToMain()">&#60;</div>
+  <div class="nav">
+    <div id="morseEncodeTab" class="active">Encode</div>
+    <div id="morseDecodeTab">Decode</div>
+  </div>
+  <div class="container">
+    <div id="morseEncodeMode">
+      <div style="text-align:center;">Convert Text to Morse</div>
+      <textarea id="morseTextInput" placeholder="Masukkan teks..."></textarea>
+      <br>
+      <button class="button" onclick="convertToMorse()">Convert</button>
+      <button class="button" id="copyMorseBtn" onclick="copyResult('morseResult','copyMorseBtn')">Copy</button>
+      <div id="morseResult" class="output-box"></div>
+    </div>
+    <div id="morseDecodeMode" class="hidden">
+      <div style="text-align:center;">Convert Morse to Text</div>
+      <textarea id="morseCodeInput" placeholder="Masukkan kode morse (pisah spasi)..."></textarea>
+      <br>
+      <button class="button" onclick="convertFromMorse()">Convert</button>
+      <button class="button" id="copyMorseDecodeBtn" onclick="copyResult('morseDecodeResult','copyMorseDecodeBtn')">Copy</button>
+      <div id="morseDecodeResult" class="output-box"></div>
+    </div>
+  </div>
+</div>
+
+<!-- rot13 -->
+	<div id="rot13 conv" class="section">
+  <div class="back-btn" onclick="backToMain()">&#60;</div>
+  <div class="nav">
+    <div id="rot13EncodeTab" class="active">Encode</div>
+    <div id="rot13DecodeTab">Decode</div>
+  </div>
+  <div class="container">
+    <div id="rot13EncodeMode">
+      <div style="text-align:center;">Convert Text to ROT13</div>
+      <textarea id="rot13TextInput" placeholder="Masukkan teks..."></textarea>
+      <br>
+      <button class="button" onclick="convertToRot13()">Convert</button>
+      <button class="button" id="copyRot13Btn" onclick="copyResult('rot13Result','copyRot13Btn')">Copy</button>
+      <div id="rot13Result" class="output-box"></div>
+    </div>
+    <div id="rot13DecodeMode" class="hidden">
+      <div style="text-align:center;">Convert ROT13 to Text</div>
+      <textarea id="rot13CodeInput" placeholder="Masukkan kode ROT13..."></textarea>
+      <br>
+      <button class="button" onclick="convertFromRot13()">Convert</button>
+      <button class="button" id="copyRot13DecodeBtn" onclick="copyResult('rot13DecodeResult','copyRot13DecodeBtn')">Copy</button>
+      <div id="rot13DecodeResult" class="output-box"></div>
+    </div>
+  </div>
+</div>
+
+<!-- html executor -->
+	<div id="html executor" class="section">
+  <div class="back-btn" onclick="backToMain()">&#60;</div>
+  <h2 style="text-align:center; margin-top:20px;">HTML Executor</h2>
+
+  <div class="input-box" style="margin-top:20px;">
+    <label for="htmlInput">Enter HTML code:</label>
+    <textarea id="htmlInput" placeholder="&lt;h1&gt;Hello World&lt;/h1&gt;"></textarea>
+  </div>
+
+  <div style="text-align:center; margin-top:20px;">
+    <button class="button" onclick="executeHTML()">Execute</button>
+    <button class="button" onclick="enterPreviewFullscreen()" style="margin-top:10px;">Fullscreen</button>
+  </div>
+
+  <div id="previewContainer" style="margin-top:30px;text-align:center;">
+    <h3 id="previewLabel">Results:</h3>
+    <iframe id="htmlOutput" allowfullscreen style="width:100%;max-width:600px;height:300px;border:2px solid white;border-radius:8px;background:white;"></iframe>
+  </div>
+</div>
+
+<!-- about -->
+<div id="about" class="section">
+	<h2 style="text-align:left;margin-top:40px;">about</h2>
+	<h3 style="text-align:left; margin-top:30px;">base info</h3>
+	<div class="back-btn" onclick="backToMain()">&#60;</div>
+	<div style="text-align:left;">ㅤ</div>
+	<div style="text-align:left;">version 0.9.2(Beta)</div>
+	<div style="text-align:left;">by tripodencok</div>
+	<div style="text-align:left;">ㅤ</div>
+	<div style="text-align:left;">fine : If there is no text in brackets on the button, for example "TB text converter", it means the script is working properly</div>
+	<div style="text-align:left;">ㅤ</div>
+	<div style="text-align:left;">Beta : If there is a Beta message, for example "HTML executor (Beta)" it indicates that there are still a few errors in the script.</div>
+	<div style="text-align:left;">ㅤ</div>
+	<div style="text-align:left;">Alpha : If there is an alpha message there, it means that the feature still has many errors.</div>
+	<div style="text-align:left;">ㅤ</div>
+	<h3 style="text-align:left; margin-top:30px;">list and feature</h3>
+	<div style="text-align:left;">ㅤ</div>
+	<div style="text-align:left;">"TB text converter" : </div>
+	<div style="text-align:left;">This is a text converter like base64, base32, hex, etc. made by TBtools, it can only be converted via TBtools (unless someone makes a TBtools converter in a separate place)</div>
+	<div style="text-align:left;">ㅤ</div>
+	<div style="text-align:left;">"random number":  </div>
+	<div style="text-align:left;">this is the number draw, enter min - max then press random and the drawn number will appear.</div>
+	<div style="text-align:left;">ㅤ</div>
+	<div style="text-align:left;">"script merge" : </div>
+	<div style="text-align:left;">This is a feature that can combine 2 scripts into 1, but this feature is still Beta and there are a few bugs.</div>
+	<div style="text-align:left;">ㅤ</div>
+	<div style="text-align:left;">"HTML executor": </div>
+	<div style="text-align:left;">you can input your html here and execute it, to see the system, but this feature is still Beta because there is a small error on fullscreen.</div>
+	<div style="text-align:left;">ㅤ</div>
+	<div style="text-align:left;">"timestamp": </div>
+	<div style="text-align:left;">calculates how long a certain time has passed by pressing the play button on the "timestamp" function.</div>
+	<div style="text-align:left;">ㅤ</div>
+	<div style="text-align:left;">"timer": </div>
+	<div style="text-align:left;">you can count down the time here, by setting the hours, minutes, seconds then press play.</div>
+	<div style="text-align:left;">ㅤ</div>
+	<div style="text-align:left;">"converter ....." : </div>
+	<div style="text-align:left;">Here, you can translate to secret languages, depending on which language you choose, there are base16, base32, base64, rot13, etc.</div>
+	<div style="text-align:left;">ㅤ</div>
+	<div style="text-align:left;">"mcpe ..." : </div>
+	<div style="text-align:left;">You can create Minecraft packs here, but this feature is not yet complete. </div>
+	
+ <script>
+ const tokens = [
+  "#k,^xfaixcz4.._uZI",
+  "xHbw-rc8 .zleuemiY",
+  "5c,&Nb $LAffg*E7uu",
+  "rkleZ*3a2.TbzS.M,U",
+  "fv-vA.7w vhkm#lJje",
+  "3.uy -hyEnoosy7l d",
+  "Yjoj.9wUox4*#,fbs.",
+  "xyXx08?jiqgoYyfM8,",
+  "bwcak-aBu7C .ehmuP",
+  "zmz^,1oxXxaz.xh,gk",
+  "oxcgp=ISgh9,Fks+sn",
+  "x,u-kDoz0ayuvI^o+5",
+  "xLM,,c=p=$,y14OxnA",
+  "qQBTpA 4tyvpe%Irui",
+  "or,tyYq.eE0y7buq+x",
+  "EBvqN.dtt_6iBici p",
+  " _w1,D5 m_bBQdYAo!",
+  "de76.el$+dM.a0MgKM",
+  "uya&8cMc eF=@jqr,5",
+  "74R$@nmTP M?j.4D q",
+  "^ps,bSW1YvHeE6b$8@",
+  "MKvpu.|g,7mCl#v-VJ",
+  "x0Ix_zN.udrYny.tA.",
+  "ZGl08 .cq-*sbc El!",
+  "1*hoir hb|Oi=2d,j7",
+  "L, g,oCjj26uBDX_p0",
+  "Vh4iO3h,qo,EaSP $h",
+  "vh3Ayz7nh,EdPqk.@w",
+  "6h-Uw,7j,Q*mbmk.5R",
+  "uhR6u!ynxg^FqoU9,e"
+];
+
+ function getRandomToken(){
+ return tokens[Math.floor(Math.random()* tokens.length)];
+}
+
+ document.getElementById('codeTab').onclick =()=>{
+ document.getElementById('codeMode').classList.remove('hidden');
+ document.getElementById('textMode').classList.add('hidden');
+ document.getElementById('codeTab').classList.add('active');
+ document.getElementById('textTab').classList.remove('active');
+};
+
+ document.getElementById('textTab').onclick =()=>{
+ document.getElementById('codeMode').classList.add('hidden');
+ document.getElementById('textMode').classList.remove('hidden');
+ document.getElementById('codeTab').classList.remove('active');
+ document.getElementById('textTab').classList.add('active');
+};
+
+ function convertToCode(){
+ const input = document.getElementById('textInput').value.replace(/\n/g,'n\\p');
+ const result = input.split('').map(c => c + getRandomToken()).join('');
+ document.getElementById('codeResult').textContent = result;
+}
+
+ function convertToText(){
+ let input = document.getElementById('codeInput').value;
+ tokens.forEach(token =>{
+ input = input.split(token).join('');
+});
+ document.getElementById('textResult').textContent = input.replace(/n\\p/g,'\n');
+}
+
+ function copyResult(resultId,buttonId){
+ const text = document.getElementById(resultId).textContent;
+ if(!text)return;
+ navigator.clipboard.writeText(text).then(()=>{
+ if(buttonId === 'dummy')return;
+ const btn = document.getElementById(buttonId);
+ btn.textContent = "Copied";
+ setTimeout(()=>{
+ btn.textContent = "Copy";
+},1500);
+});
+}
+
+ document.getElementById('textInput').addEventListener('input',()=>{
+ document.getElementById('copyCodeBtn').textContent = 'Copy';
+});
+
+ document.getElementById('codeInput').addEventListener('input',()=>{
+ document.getElementById('copyTextBtn').textContent = 'Copy';
+});
+
+ function openSection(id){
+ document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
+}
+
+ function backToMain() {
+  document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
+  const main = document.getElementById('mainMenu');
+  if (main) {
+    main.style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+ function generateRandom(){
+ const min = parseInt(document.getElementById('min').value);
+ const max = parseInt(document.getElementById('max').value);
+ if(isNaN(min)|| isNaN(max)|| min > max){
+ document.getElementById('randomResult').textContent = 'Invalid input';
+ return;
+}
+ const result = Math.floor(Math.random()*(max - min + 1))+ min;
+ document.getElementById('randomResult').textContent = result;
+}
+
+function mergeScripts(){
+ const method = document.getElementById('mergeMethod').value;
+ const s1 = document.getElementById('script1').value.trim();
+ const s2 = document.getElementById('script2').value.trim();
+ const resultBox = document.getElementById('mergeResult');
+ const mergeBtn = document.getElementById('mergeBtn');
+
+ if(!s1)return resultBox.textContent = 'Script 1 is empty';
+ if(!s2)return resultBox.textContent = 'Script 2 is empty';
+
+ let result = '';
+
+ if(method === 'addonly'){
+ const lines1 = new Set(s1.split('\n'));
+ const lines2 = s2.split('\n').filter(line => !lines1.has(line));
+ result = s1 + '\n' + lines2.join('\n');
+}else if(method === 'replace'){
+ const lines1 = s1.split('\n');
+ const lines2 = s2.split('\n');
+ const final ={};
+
+ lines1.forEach(line =>{
+ const key = line.split('=')[0];
+ final[key] = line;
+});
+ lines2.forEach(line =>{
+ const key = line.split('=')[0];
+ final[key] = line;
+});
+
+ result = Object.values(final).join('\n');
+}
+
+ resultBox.textContent = result.trim();
+ mergeBtn.textContent = 'Merged';
+ setTimeout(()=> mergeBtn.textContent = 'Merge',1500);
+}
+
+let timer = {
+  minutes: 0,
+  seconds: 0,
+  ms: 0,
+  running: false,
+  interval: null
+};
+
+function updateTimerDisplay() {
+  const m = String(timer.minutes).padStart(2, '0');
+  const s = String(timer.seconds).padStart(2, '0');
+  const ms = String(timer.ms).padStart(2, '0');
+  document.getElementById("timerDisplay").textContent = `${m}.${s}.${ms}`;
+}
+
+function startTimer() {
+  timer.interval = setInterval(() => {
+    timer.ms++;
+    if (timer.ms >= 100) {
+      timer.ms = 0;
+      timer.seconds++;
+    }
+    if (timer.seconds >= 100) {
+      timer.seconds = 0;
+      timer.minutes++;
+    }
+    if (timer.minutes >= 100) {
+      timer.minutes = 0;
+    }
+    updateTimerDisplay();
+  }, 10);
+}
+
+function toggletimestamp() {
+  const playPauseBtn = document.getElementById("playPauseBtn");
+  const resetBtn = document.getElementById("resetBtn");
+
+  if (timer.running) {
+    clearInterval(timer.interval);
+    timer.running = false;
+    playPauseBtn.textContent = "Play";
+    resetBtn.style.display = "inline-block";
+  } else {
+    startTimer();
+    timer.running = true;
+    playPauseBtn.textContent = "Pause";
+    resetBtn.style.display = "none";
+  }
+}
+
+function resetTimer() {
+  timer.minutes = 0;
+  timer.seconds = 0;
+  timer.ms = 0;
+  updateTimerDisplay();
+}
+
+let timerInterval;
+let isRunning = false;
+let totalTime = 0;
+let flashing = false;
+let hasRun = false;
+
+function toggleTimer() {
+  const playBtn = document.getElementById("timerPlayBtn");
+  const stopBtn = document.getElementById("timerStopBtn");
+  const warn = document.getElementById("timerWarning");
+  const box = document.getElementById("timerFlashBox");
+
+  if (!isRunning) {
+    if (!hasRun) {
+      const h = parseInt(document.getElementById("inputHour").value || "0");
+      const m = parseInt(document.getElementById("inputMin").value || "0");
+      const s = parseInt(document.getElementById("inputSec").value || "0");
+
+      if (h > 99 || m > 59 || s > 59) {
+        warn.textContent = "Input exceeds maximum limit!";
+        return;
+      }
+
+      totalTime = h * 3600 + m * 60 + s;
+
+      if (totalTime <= 0) {
+        warn.textContent = "You haven't setup the numbers yet";
+        return;
+      }
+
+      warn.textContent = "";
+      updateDisplay(totalTime);
+      hasRun = true;
+    }
+
+    isRunning = true;
+    playBtn.textContent = "Pause";
+
+    timerInterval = setInterval(() => {
+      if (totalTime <= 0) {
+        clearInterval(timerInterval);
+        flashBox();
+        playBtn.style.display = "none";
+        stopBtn.style.display = "inline-block";
+        return;
+      }
+
+      totalTime--;
+      updateDisplay(totalTime);
+    }, 1000);
+  } else {
+    isRunning = false;
+    playBtn.textContent = "Play";
+    clearInterval(timerInterval);
+  }
+}
+
+function updateDisplay(seconds) {
+  const hours = String(Math.floor(seconds / 3600)).padStart(2, "0");
+  const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, "0");
+  const secs = String(seconds % 60).padStart(2, "0");
+
+  document.getElementById("timerHour").textContent = hours;
+  document.getElementById("timerMin").textContent = mins;
+  document.getElementById("timerSec").textContent = secs;
+}
+
+function stopTimer() {
+  const stopBtn = document.getElementById("timerStopBtn");
+  const playBtn = document.getElementById("timerPlayBtn");
+  const box = document.getElementById("timerFlashBox");
+
+  flashing = false;
+  isRunning = false;
+  hasRun = false;
+  clearInterval(timerInterval);
+  stopBtn.style.display = "none";
+  playBtn.style.display = "inline-block";
+  playBtn.textContent = "Play";
+  box.style.background = "black";
+  updateDisplay(0);
+}
+
+function flashBox() {
+  const box = document.getElementById("timerFlashBox");
+  flashing = true;
+  let toggle = false;
+
+  const flashInterval = setInterval(() => {
+    if (!flashing) return clearInterval(flashInterval);
+    box.style.background = toggle ? "white" : "black";
+    toggle = !toggle;
+  }, 250);
+}
+
+document.getElementById('base64EncodeTab').onclick = () => {
+  document.getElementById('base64EncodeMode').classList.remove('hidden');
+  document.getElementById('base64DecodeMode').classList.add('hidden');
+  document.getElementById('base64EncodeTab').classList.add('active');
+  document.getElementById('base64DecodeTab').classList.remove('active');
+};
+
+document.getElementById('base64DecodeTab').onclick = () => {
+  document.getElementById('base64EncodeMode').classList.add('hidden');
+  document.getElementById('base64DecodeMode').classList.remove('hidden');
+  document.getElementById('base64EncodeTab').classList.remove('active');
+  document.getElementById('base64DecodeTab').classList.add('active');
+};
+
+function convertToBase64() {
+  const input = document.getElementById('base64TextInput').value;
+  const encoded = btoa(unescape(encodeURIComponent(input)));
+  document.getElementById('base64Result').textContent = encoded;
+}
+
+function convertFromBase64() {
+  const input = document.getElementById('base64CodeInput').value;
+  try {
+    const decoded = decodeURIComponent(escape(atob(input)));
+    document.getElementById('base64DecodeResult').textContent = decoded;
+  } catch (e) {
+    document.getElementById('base64DecodeResult').textContent = 'Invalid base64!';
+  }
+}
+
+document.getElementById('binaryEncodeTab').onclick = () => {
+  document.getElementById('binaryEncodeMode').classList.remove('hidden');
+  document.getElementById('binaryDecodeMode').classList.add('hidden');
+  document.getElementById('binaryEncodeTab').classList.add('active');
+  document.getElementById('binaryDecodeTab').classList.remove('active');
+};
+
+document.getElementById('binaryDecodeTab').onclick = () => {
+  document.getElementById('binaryEncodeMode').classList.add('hidden');
+  document.getElementById('binaryDecodeMode').classList.remove('hidden');
+  document.getElementById('binaryEncodeTab').classList.remove('active');
+  document.getElementById('binaryDecodeTab').classList.add('active');
+};
+
+function convertToBinary() {
+  const input = document.getElementById('binaryTextInput').value;
+  const binary = input.split('').map(char => {
+    return char.charCodeAt(0).toString(2).padStart(8, '0');
+  }).join(' ');
+  document.getElementById('binaryResult').textContent = binary;
+}
+
+function convertFromBinary() {
+  const input = document.getElementById('binaryCodeInput').value.trim();
+  try {
+    const text = input.split(' ').map(bin => {
+      return String.fromCharCode(parseInt(bin, 2));
+    }).join('');
+    document.getElementById('binaryDecodeResult').textContent = text;
+  } catch (e) {
+    document.getElementById('binaryDecodeResult').textContent = 'Invalid binary input!';
+  }
+}
+
+document.getElementById('hexEncodeTab').onclick = () => {
+  document.getElementById('hexEncodeMode').classList.remove('hidden');
+  document.getElementById('hexDecodeMode').classList.add('hidden');
+  document.getElementById('hexEncodeTab').classList.add('active');
+  document.getElementById('hexDecodeTab').classList.remove('active');
+};
+
+document.getElementById('hexDecodeTab').onclick = () => {
+  document.getElementById('hexEncodeMode').classList.add('hidden');
+  document.getElementById('hexDecodeMode').classList.remove('hidden');
+  document.getElementById('hexEncodeTab').classList.remove('active');
+  document.getElementById('hexDecodeTab').classList.add('active');
+};
+
+function convertToHex() {
+  const input = document.getElementById('hexTextInput').value;
+  const hex = input.split('').map(char => {
+    return char.charCodeAt(0).toString(16).padStart(2, '0');
+  }).join(' ');
+  document.getElementById('hexResult').textContent = hex;
+}
+
+function convertFromHex() {
+  const input = document.getElementById('hexCodeInput').value.trim();
+  try {
+    const text = input.split(' ').map(hex => {
+      return String.fromCharCode(parseInt(hex, 16));
+    }).join('');
+    document.getElementById('hexDecodeResult').textContent = text;
+  } catch (e) {
+    document.getElementById('hexDecodeResult').textContent = 'Invalid hex input!';
+  }
+}
+
+document.getElementById('base16EncodeTab').onclick = () => {
+  document.getElementById('base16EncodeMode').classList.remove('hidden');
+  document.getElementById('base16DecodeMode').classList.add('hidden');
+  document.getElementById('base16EncodeTab').classList.add('active');
+  document.getElementById('base16DecodeTab').classList.remove('active');
+};
+
+document.getElementById('base16DecodeTab').onclick = () => {
+  document.getElementById('base16EncodeMode').classList.add('hidden');
+  document.getElementById('base16DecodeMode').classList.remove('hidden');
+  document.getElementById('base16EncodeTab').classList.remove('active');
+  document.getElementById('base16DecodeTab').classList.add('active');
+};
+
+function convertToBase16() {
+  const input = document.getElementById('base16TextInput').value;
+  const hex = input.split('').map(char =>
+    char.charCodeAt(0).toString(16).padStart(2, '0')
+  ).join(' ');
+  document.getElementById('base16Result').textContent = hex;
+}
+
+function convertFromBase16() {
+  const input = document.getElementById('base16CodeInput').value.trim();
+  try {
+    const text = input.split(' ').map(hex =>
+      String.fromCharCode(parseInt(hex, 16))
+    ).join('');
+    document.getElementById('base16DecodeResult').textContent = text;
+  } catch (e) {
+    document.getElementById('base16DecodeResult').textContent = 'Invalid base16 input!';
+  }
+}
+
+document.getElementById('base32EncodeTab').onclick = () => {
+  document.getElementById('base32EncodeMode').classList.remove('hidden');
+  document.getElementById('base32DecodeMode').classList.add('hidden');
+  document.getElementById('base32EncodeTab').classList.add('active');
+  document.getElementById('base32DecodeTab').classList.remove('active');
+};
+
+document.getElementById('base32DecodeTab').onclick = () => {
+  document.getElementById('base32EncodeMode').classList.add('hidden');
+  document.getElementById('base32DecodeMode').classList.remove('hidden');
+  document.getElementById('base32EncodeTab').classList.remove('active');
+  document.getElementById('base32DecodeTab').classList.add('active');
+};
+
+function convertToBase32() {
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+  let input = unescape(encodeURIComponent(document.getElementById('base32TextInput').value));
+  let binary = '';
+  for (let i = 0; i < input.length; i++) {
+    binary += input.charCodeAt(i).toString(2).padStart(8, '0');
+  }
+  let result = '';
+  for (let i = 0; i < binary.length; i += 5) {
+    const chunk = binary.substring(i, i + 5);
+    if (chunk.length < 5) {
+      result += alphabet[parseInt(chunk.padEnd(5, '0'), 2)];
+    } else {
+      result += alphabet[parseInt(chunk, 2)];
+    }
+  }
+  document.getElementById('base32Result').textContent = result;
+}
+
+function convertFromBase32() {
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+  const input = document.getElementById('base32CodeInput').value.toUpperCase().replace(/[^A-Z2-7]/g, '');
+  let binary = '';
+  for (let i = 0; i < input.length; i++) {
+    const val = alphabet.indexOf(input[i]);
+    if (val === -1) continue;
+    binary += val.toString(2).padStart(5, '0');
+  }
+  let text = '';
+  for (let i = 0; i < binary.length; i += 8) {
+    const byte = binary.substring(i, i + 8);
+    if (byte.length === 8) {
+      text += String.fromCharCode(parseInt(byte, 2));
+    }
+  }
+  try {
+    document.getElementById('base32DecodeResult').textContent = decodeURIComponent(escape(text));
+  } catch (e) {
+    document.getElementById('base32DecodeResult').textContent = "Invalid base32 input!";
+  }
+}
+
+function generateUUIDv4() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+function showUUID() {
+  const uuid = generateUUIDv4();
+  document.getElementById("uuidOutput").textContent = uuid;
+}
+
+function addSubpack() {
+  const container = document.createElement("div");
+  container.style.border = "2px solid white";
+  container.style.padding = "10px";
+  container.style.marginTop = "10px";
+  container.style.borderRadius = "8px";
+  container.style.position = "relative";
+
+  container.innerHTML = `
+    <button onclick="this.parentElement.remove()" style="position:absolute;top:-8px;left:-8px;background:red;color:white;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;">❌</button>
+    <div class="input-box">
+      <label>Folder Name:</label>
+      <input type="text" placeholder="folder_name" class="subpack-folder" />
+    </div>
+    <div class="input-box">
+      <label>Name:</label>
+      <input type="text" placeholder="name" class="subpack-name" />
+    </div>
+  `;
+  document.getElementById("subpackContainer").appendChild(container);
+}
+
+function addLabel() {
+  const container = document.createElement("div");
+  container.style.border = "2px solid white";
+  container.style.padding = "10px";
+  container.style.marginTop = "10px";
+  container.style.borderRadius = "8px";
+  container.style.position = "relative";
+
+  container.innerHTML = `
+    <button onclick="this.parentElement.remove()" style="position:absolute;top:-8px;left:-8px;background:red;color:white;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;">❌</button>
+    <div class="input-box">
+      <label>Label:</label>
+      <input type="text" placeholder="Label text" class="label-text" />
+    </div>
+  `;
+  document.getElementById("labelContainer").appendChild(container);
+}
+
+function generateManifest() {
+  const name = document.getElementById("mf_name").value.trim();
+  const desc = document.getElementById("mf_desc").value.trim();
+  const version = document.getElementById("mf_version").value.trim() || "1.0.1";
+  const mev = document.getElementById("mf_mev").value.trim() || "1,20,60";
+
+  if (!name || !desc) {
+    document.getElementById("manifestResult").textContent = "Nama atau Deskripsi kosong!";
+    return;
+  }
+
+  const uuid1 = generateUUIDv4();
+  const uuid2 = generateUUIDv4();
+
+  const manifest = {
+    format_version: 2,
+    header: {
+      name: name,
+      description: desc,
+      uuid: uuid1,
+      version: version.split('.').map(x => parseInt(x)),
+      min_engine_version: mev.split(',').map(x => parseInt(x))
+    },
+    modules: [{
+      type: "resources",
+      uuid: uuid2,
+      version: version.split('.').map(x => parseInt(x))
+    }]
+  };
+
+  const subpacks = [];
+  const folderEls = document.querySelectorAll(".subpack-folder");
+  const nameEls = document.querySelectorAll(".subpack-name");
+
+  for (let i = 0; i < folderEls.length; i++) {
+    const folder = folderEls[i].value.trim();
+    const sname = nameEls[i].value.trim();
+    if (folder || sname) {
+      subpacks.push({
+        folder_name: folder || "",
+        name: sname || "",
+        memory_tier: 0
+      });
+    }
+  }
+  if (subpacks.length) manifest.subpacks = subpacks;
+
+  const labels = [];
+  document.querySelectorAll(".label-text").forEach(el => {
+    const val = el.value.trim();
+    if (val) labels.push({ type: "label", text: val });
+  });
+  if (labels.length) manifest.settings = labels;
+
+  const json = `////Made by TBtools, if you want to delete this text, do it, no problem\n${JSON.stringify(manifest, null, 2)}`;
+  document.getElementById("manifestResult").textContent = json;
+}
+
+function downloadManifest() {
+  const content = document.getElementById("manifestResult").textContent;
+  if (!content || content.includes("kosong")) return;
+
+  const blob = new Blob([content], { type: "application/json" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "manifest.json";
+  link.click();
+}
+
+function validateJson() {
+  const input = document.getElementById("jsonInput").value.trim();
+  const resultBox = document.getElementById("jsonResult");
+  const copyWrapper = document.getElementById("jsonCopyWrapper");
+  const copyBtn = document.getElementById("copyJsonBtn");
+
+  resultBox.style.display = "block";
+  copyWrapper.style.display = "none";
+
+  try {
+    const parsed = JSON.parse(input);
+    const fixed = JSON.stringify(parsed, null, 2);
+    resultBox.textContent = fixed;
+    copyWrapper.style.display = "block";
+    copyBtn.textContent = "Copy";
+  } catch (e) {
+    try {
+      let fixedInput = input
+        .replace(/([{,])(\s*)(\w+)(\s*):/g, '$1"$3":') 
+        .replace(/'/g, '"'); 
+
+      fixedInput = fixedInput.replace(/:\s*"([^"]*)}/g, (match, val) => {
+        return `: "${val}"}`;
+      });
+
+      const parsed = eval("(" + fixedInput + ")");
+      const fixed = JSON.stringify(parsed, null, 2);
+      resultBox.textContent = fixed
+      copyWrapper.style.display = "block";
+      copyBtn.textContent = "Copy";
+    } catch {
+      resultBox.textContent = "❌ The JSON is invalid and cannot be auto-corrected.";
+    }
+  }
+}
+
+document.getElementById('octalEncodeTab').onclick = () => {
+  document.getElementById('octalEncodeMode').classList.remove('hidden');
+  document.getElementById('octalDecodeMode').classList.add('hidden');
+  document.getElementById('octalEncodeTab').classList.add('active');
+  document.getElementById('octalDecodeTab').classList.remove('active');
+};
+
+document.getElementById('octalDecodeTab').onclick = () => {
+  document.getElementById('octalEncodeMode').classList.add('hidden');
+  document.getElementById('octalDecodeMode').classList.remove('hidden');
+  document.getElementById('octalEncodeTab').classList.remove('active');
+  document.getElementById('octalDecodeTab').classList.add('active');
+};
+
+function convertToOctal() {
+  const input = document.getElementById('octalTextInput').value;
+  const octal = input.split('').map(char =>
+    char.charCodeAt(0).toString(8).padStart(3, '0')
+  ).join(' ');
+  document.getElementById('octalResult').textContent = octal;
+}
+
+function convertFromOctal() {
+  const input = document.getElementById('octalCodeInput').value.trim();
+  try {
+    const text = input.split(' ').map(oct =>
+      String.fromCharCode(parseInt(oct, 8))
+    ).join('');
+    document.getElementById('octalDecodeResult').textContent = text;
+  } catch (e) {
+    document.getElementById('octalDecodeResult').textContent = 'Invalid octal input!';
+  }
+}
+
+const morseMap = {
+  A: ".-",     B: "-...",   C: "-.-.",   D: "-..",
+  E: ".",      F: "..-.",   G: "--.",    H: "....",
+  I: "..",     J: ".---",   K: "-.-",    L: ".-..",
+  M: "--",     N: "-.",     O: "---",    P: ".--.",
+  Q: "--.-",   R: ".-.",    S: "...",    T: "-",
+  U: "..-",    V: "...-",   W: ".--",    X: "-..-",
+  Y: "-.--",   Z: "--..",
+  0: "-----",  1: ".----",  2: "..---",  3: "...--",
+  4: "....-",  5: ".....",  6: "-....",  7: "--...",
+  8: "---..",  9: "----.",
+  " ": "/",    ".": ".-.-.-", ",": "--..--"
+};
+
+const reverseMorseMap = Object.fromEntries(
+  Object.entries(morseMap).map(([k, v]) => [v, k])
+);
+
+document.getElementById('morseEncodeTab').onclick = () => {
+  document.getElementById('morseEncodeMode').classList.remove('hidden');
+  document.getElementById('morseDecodeMode').classList.add('hidden');
+  document.getElementById('morseEncodeTab').classList.add('active');
+  document.getElementById('morseDecodeTab').classList.remove('active');
+};
+
+document.getElementById('morseDecodeTab').onclick = () => {
+  document.getElementById('morseEncodeMode').classList.add('hidden');
+  document.getElementById('morseDecodeMode').classList.remove('hidden');
+  document.getElementById('morseEncodeTab').classList.remove('active');
+  document.getElementById('morseDecodeTab').classList.add('active');
+};
+
+function convertToMorse() {
+  const input = document.getElementById('morseTextInput').value.toUpperCase();
+  const morse = input.split('').map(c => morseMap[c] || '').join(' ');
+  document.getElementById('morseResult').textContent = morse.trim();
+}
+
+function convertFromMorse() {
+  const input = document.getElementById('morseCodeInput').value.trim();
+  const text = input.split(' ').map(code => reverseMorseMap[code] || '').join('');
+  document.getElementById('morseDecodeResult').textContent = text;
+}
+
+document.getElementById('rot13EncodeTab').onclick = () => {
+  document.getElementById('rot13EncodeMode').classList.remove('hidden');
+  document.getElementById('rot13DecodeMode').classList.add('hidden');
+  document.getElementById('rot13EncodeTab').classList.add('active');
+  document.getElementById('rot13DecodeTab').classList.remove('active');
+};
+
+document.getElementById('rot13DecodeTab').onclick = () => {
+  document.getElementById('rot13EncodeMode').classList.add('hidden');
+  document.getElementById('rot13DecodeMode').classList.remove('hidden');
+  document.getElementById('rot13EncodeTab').classList.remove('active');
+  document.getElementById('rot13DecodeTab').classList.add('active');
+};
+
+function rot13(text) {
+  return text.replace(/[a-zA-Z]/g, c => {
+    const base = c <= 'Z' ? 65 : 97;
+    return String.fromCharCode((c.charCodeAt(0) - base + 13) % 26 + base);
+  });
+}
+
+function convertToRot13() {
+  const input = document.getElementById('rot13TextInput').value;
+  const result = rot13(input);
+  document.getElementById('rot13Result').textContent = result;
+}
+
+function convertFromRot13() {
+  const input = document.getElementById('rot13CodeInput').value;
+  const result = rot13(input);
+  document.getElementById('rot13DecodeResult').textContent = result;
+}
+
+function executeHTML() {
+  const input = document.getElementById("htmlInput").value;
+  const iframe = document.getElementById("htmlOutput");
+  const doc = iframe.contentWindow.document;
+
+  doc.open();
+  doc.write(`
+    <style>
+      body {
+        margin: 0;
+        padding: 20px;
+        font-family: sans-serif;
+        box-sizing: border-box;
+      }
+      #exitBtn {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        padding: 10px 15px;
+        background: black;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        z-index: 9999;
+        cursor: pointer;
+      }
+    </style>
+    <button id="exitBtn" onclick="parent.exitPreviewFullscreen()">Exit Fullscreen</button>
+    <div id="content">${input}</div>
+  `);
+  doc.close();
+}
+
+function enterPreviewFullscreen() {
+  const iframe = document.getElementById("htmlOutput");
+  iframe.style.position = "fixed";
+  iframe.style.top = "0";
+  iframe.style.left = "0";
+  iframe.style.width = "100vw";
+  iframe.style.height = "100vh";
+  iframe.style.zIndex = "9999";
+  iframe.style.border = "none";
+  iframe.style.borderRadius = "0";
+}
+
+function exitPreviewFullscreen() {
+  const iframe = document.getElementById("htmlOutput");
+  iframe.removeAttribute("style");
+}
+
+function addSubpackBehv() {
+  const container = document.createElement("div");
+  container.style.border = "2px solid white";
+  container.style.padding = "10px";
+  container.style.marginTop = "10px";
+  container.style.borderRadius = "8px";
+  container.style.position = "relative";
+
+  container.innerHTML = `
+    <button onclick="this.parentElement.remove()" style="position:absolute;top:-8px;left:-8px;background:red;color:white;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;">❌</button>
+    <div class="input-box">
+      <label>Folder Name:</label>
+      <input type="text" placeholder="folder_name" class="subpack-folder-behv" />
+    </div>
+    <div class="input-box">
+      <label>Name:</label>
+      <input type="text" placeholder="name" class="subpack-name-behv" />
+    </div>
+  `;
+  document.getElementById("subpackContainerBehv").appendChild(container);
+}
+
+function addLabelBehv() {
+  const container = document.createElement("div");
+  container.style.border = "2px solid white";
+  container.style.padding = "10px";
+  container.style.marginTop = "10px";
+  container.style.borderRadius = "8px";
+  container.style.position = "relative";
+
+  container.innerHTML = `
+    <button onclick="this.parentElement.remove()" style="position:absolute;top:-8px;left:-8px;background:red;color:white;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;">❌</button>
+    <div class="input-box">
+      <label>Label:</label>
+      <input type="text" placeholder="Label text" class="label-text-behv" />
+    </div>
+  `;
+  document.getElementById("labelContainerBehv").appendChild(container);
+}
+
+function generateManifestBehv() {
+  const name = document.getElementById("mf_namebehv").value.trim();
+  const desc = document.getElementById("mf_descbehv").value.trim();
+  const version = document.getElementById("mf_versionbehv").value.trim() || "1.0.1";
+  const mev = document.getElementById("mf_mevbehv").value.trim() || "1,20,60";
+
+  if (!name || !desc) {
+    document.getElementById("manifestResultBehv").textContent = "Nama atau Deskripsi kosong!";
+    return;
+  }
+
+  const uuid1 = generateUUIDv4();
+  const uuid2 = generateUUIDv4();
+
+  const manifest = {
+    format_version: 2,
+    header: {
+      name: name,
+      description: desc,
+      uuid: uuid1,
+      version: version.split('.').map(x => parseInt(x)),
+      min_engine_version: mev.split(',').map(x => parseInt(x))
+    },
+    modules: [{
+      type: "data",
+      uuid: uuid2,
+      version: version.split('.').map(x => parseInt(x))
+    }]
+  };
+
+  const subpacks = [];
+  const folderEls = document.querySelectorAll(".subpack-folder-behv");
+  const nameEls = document.querySelectorAll(".subpack-name-behv");
+
+  for (let i = 0; i < folderEls.length; i++) {
+    const folder = folderEls[i].value.trim();
+    const sname = nameEls[i].value.trim();
+    if (folder || sname) {
+      subpacks.push({
+        folder_name: folder || "",
+        name: sname || "",
+        memory_tier: 0
+      });
+    }
+  }
+  if (subpacks.length) manifest.subpacks = subpacks;
+
+  const labels = [];
+  document.querySelectorAll(".label-text-behv").forEach(el => {
+    const val = el.value.trim();
+    if (val) labels.push({ type: "label", text: val });
+  });
+  if (labels.length) manifest.settings = labels;
+
+  const json = `////Made by TBtools, if you want to delete this text, do it, no problem\n${JSON.stringify(manifest, null, 2)}`;
+  document.getElementById("manifestResultBehv").textContent = json;
+}
+
+function downloadManifestBehv() {
+  const content = document.getElementById("manifestResultBehv").textContent;
+  if (!content || content.includes("kosong")) return;
+
+  const blob = new Blob([content], { type: "application/json" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "manifest.json";
+  link.click();
+}
+
+document.getElementById("searchTools").addEventListener("input", function () {
+  const val = this.value.toLowerCase();
+  openSection("mainMenu"); 
+
+  const menu = document.getElementById("mainMenu");
+  const items = Array.from(menu.children); 
+
+  items.forEach(el => {
+    const text = el.textContent.toLowerCase();
+    el.style.display = val === "" || text.includes(val) ? "block" : "none";
+  });
+});
+
+function toggleMenu() {
+  const menu = document.getElementById("dropdownMenu");
+  menu.classList.toggle("hidden");
+}
+
+function openSection(id) {
+  document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
+  const target = document.getElementById(id);
+  if (target) {
+    target.style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+ </script>
+</body>
+</html>
